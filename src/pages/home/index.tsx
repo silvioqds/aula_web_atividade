@@ -19,6 +19,9 @@ export default function HomePage() {
     function goToUser() {
         router.push('/user/0')
     }
+    function goToRole(){
+        router.push('/role')
+    }
 
     function treat(error: any) {
         if (authService.isUnauthorized(error)) {
@@ -59,6 +62,9 @@ export default function HomePage() {
 
                     <div>
                         <button onClick={goToUser}>Add</button>
+                    </div>
+                    <div>
+                        <button onClick={goToRole}>Visualizar Perfil de Usuários</button>
                     </div>
                 </div>
 
