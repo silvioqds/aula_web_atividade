@@ -25,7 +25,7 @@ class RoleService {
     return data;
   }
 
-  public async GetList() {
+  public async getList() {
     const response = await fetch(this.url, {
       method: "GET",
       headers: this.getHeaders(),
@@ -33,6 +33,19 @@ class RoleService {
    
     const data = await this.validate(response);
     return data as Role[];    
+  }
+
+  public async create(role : Role) {
+
+    const response = await fetch(this.url, {
+      method : 'POST',
+      headers : this.getHeaders(),
+      body: JSON.stringify(role)
+    });
+
+    const data = await this.validate(response);    
+    return data as Role;
+
   }
 
 }

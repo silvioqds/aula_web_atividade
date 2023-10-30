@@ -24,13 +24,13 @@ export default function GetRoles() {
 
   function fetchRoles() {
     roleservice
-      .GetList()
+      .getList()
       .then((list) => setRoles(list))
       .catch(treat);
   }
 
   function goToRole() {
-    alert("Indo para página de add");
+    router.push('/role/add')
   }
 
   return (
@@ -47,7 +47,7 @@ export default function GetRoles() {
           <h3>Listagem de Pefils</h3>
 
           <div>
-            <button onClick={goToRole}>Add</button>
+            <button onClick={goToRole}>Adicionar Permissão</button>
           </div>
         </div>
 

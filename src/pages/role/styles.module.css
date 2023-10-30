@@ -1,10 +1,44 @@
 .homeHeader {
-    width: 100%;
-    display: flex;
-    margin-bottom: 40px;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  margin-bottom: 40px;
+  justify-content: space-between;
 }
 
 .homeMain {
-    margin-top: 40px;
+  margin-top: 40px;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  width: 300px;
+  height: 300px;
+}
+
+.button {
+    width: 100px;
+    font-size: 18px;
+    margin-top: 40px;    
+    border-radius: 3px;
+    align-items: center;
+    padding: 10px 0px 10px 0px;
+    background-color: cadetblue;
+}
+
+.backButton {
+    width: 100px;
+    font-size: 18px;
+    margin-top: 40px;    
+    border-radius: 3px;
+    align-items: center;
+    padding: 10px 0px 10px 0px;
+    background-color: green;
 }
