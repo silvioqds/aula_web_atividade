@@ -25,6 +25,17 @@ class RoleService {
     return data;
   }
 
+  public async get(id : number) {
+
+    const response = await fetch(`${this.url}/${id}`, {
+      method : 'GET',
+      headers : this.getHeaders()
+    });
+
+    const data = await this.validate(response);
+    return data as Role;    
+  }
+
   public async getList() {
     const response = await fetch(this.url, {
       method: "GET",

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Head from "next/head"
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
@@ -8,6 +8,10 @@ import styles from './styles.module.css'
 import { userService } from '@/services/user.service'
 import { authService } from '@/services/auth.service'
 import { User } from '@/model/user'
+import SelectComponent from '@/components/select'
+import { roleservice } from '@/services/role.service'
+import MultiSelectRoles from '@/components/select'
+import Select from 'react-select/base';
 
 export default function UserPage() {
 
@@ -21,17 +25,41 @@ export default function UserPage() {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [passConfirm, setPassConfirm] = React.useState('')
+    const [options, setOptionsRole] = useState<{ value: string; label: string; }[]>([]);    
+    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+    const [labelRoleSelecionada, setLabelRoleSelecionada] = useState('')
+
+    const handleRoleChange = (value: any) => {
+        const include = selectedRoles.includes(value);
+        let array = [...selectedRoles]; // Crie uma cópia do array original
+      
+        if (include) 
+          array = array.filter(v => v !== value);
+        else
+          array.push(value);
+      
+        setSelectedRoles(array);
+      };
 
     React.useEffect(() => {
         const user = authService.getLoggedUser()
         if (!user) router.replace('/login')
-    } , [])
+        
+        roleservice.getList().then(roleList => {
+            const option = roleList.map(role => ({
+                value: role.name,
+                label: role.name
+            }));
+            setOptionsRole(option);
+        });                
+    }, []);
 
     React.useEffect(() => {
         if (params && params.id) {
             if (Number(params.id) > 0) {
                 setTitle('Edição de Usuário')
                 setId(Number(params.id))
+                setLabelRoleSelecionada('Perfils do usuário')
             }
         }
     }, [params])
@@ -40,7 +68,8 @@ export default function UserPage() {
         if (id > 0) {
             userService.get(id).then(user => {
                 setName(user.name)
-                setUsername(user.username)
+                setUsername(user.username)      
+                setSelectedRoles(user.roles)                                 
             }).catch(treat)
         }
     }, [id])
@@ -72,7 +101,7 @@ export default function UserPage() {
 
         try {
             if (id > 0) { // editar um usuário
-                let body = { name, username } as User
+                let body = { name, username, roles : selectedRoles} as User
                 
                 if (password && password.trim() !== '') {
                     body = { ...body, password }
@@ -86,7 +115,7 @@ export default function UserPage() {
                     return
                 }
         
-                await userService.create({ name, username, password })
+                await userService.create({ name, username, password, roles : selectedRoles })
                 router.back()
             }
         } catch (error: any) {
@@ -112,7 +141,8 @@ export default function UserPage() {
                         value={username}
                         readOnly={id > 0}
                         onChange={event => setUsername(event.target.value)}
-                    />
+                    />                    
+
                     <MyInput
                         label='Senha'
                         type='password'
@@ -122,7 +152,15 @@ export default function UserPage() {
                         label='Confirmar Senha'
                         type='password'
                         onChange={event => setPassConfirm(event.target.value)}
-                    />
+                    />                 
+
+                    <MultiSelectRoles
+                        options={options}
+                        selectedRoles={selectedRoles}    
+                        onChange={event => handleRoleChange(event.target.value)}   
+                        value='Perfil' 
+                    />                
+                    <p className={styles.roleSelected}>{labelRoleSelecionada}: {selectedRoles ? selectedRoles.join(', ') : selectedRoles}</p>
                 </div>
 
                 <button className={styles.button} onClick={save}>Salvar</button>
